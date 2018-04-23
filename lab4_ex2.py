@@ -6,19 +6,25 @@ import pymysql
 #import the list of tasks from the database
 def read():
     sql = "SELECT todo from task"
-    connection = pymysql.connect(user="root", password="", host="localhost", database="taskmanager")
+    connection = pymysql.connect(user="root", password="root", host="localhost", database="taskmanager")
     cursor = connection.cursor()
     cursor.execute(sql)
     result = cursor.fetchall()
+    tasks = []
+    for task in result:
+        end = len(task)-2
+        #taskk = task[2:end]
+        print(task[0])
+        tasks.append(task[0])
     print(result)
     cursor.close()
     connection.close()
-    return result
+    return tasks
 
 
 def save(newTask):
     sql = "INSERT into task(todo) VALUES (%s)"
-    connection = pymysql.connect(user="root", password="", host="localhost", database="taskmanager")
+    connection = pymysql.connect(user="root", password="root", host="localhost", database="taskmanager")
     cursor = connection.cursor()
     cursor.execute(sql, (newTask,))
     connection.commit()
@@ -28,7 +34,7 @@ def save(newTask):
 
 def remove(task):
     sql = "DELETE FROM task WHERE todo=%s"
-    connection = pymysql.connect(user="root", password="", host="localhost", database="taskmanager")
+    connection = pymysql.connect(user="root", password="root", host="localhost", database="taskmanager")
     cursor = connection.cursor()
     cursor.execute(sql, (task,))
     connection.commit()
@@ -107,6 +113,7 @@ def removeAllTasks(bot, update, args):
     for task in result:
         if task.find(rem) != -1:
             removed.append(task)
+            print(task)
             remove(task)
 
     if len(removed) > 0:
